@@ -359,7 +359,7 @@ server.route(
                    // var strval=`select * from producers WHERE id=${id}`;
                     sqlconnection.connect();
         
-                    sqlconnection.query(`select * from beats where approval_date IS NULL && approved=1`,(error,results,fields)=>{
+                    sqlconnection.query(`select * from beats where CURRENT_DATE<approval_date && approved=1`,(error,results,fields)=>{
                         if(error) reject(error);
         
                         resolve(results);
@@ -417,7 +417,7 @@ server.route(
                     //console.log(res);
                     return Number(results[0].count);
                 });
-                // console.log(countArr);
+                 console.log(countArr);
                 // console.log(countArr);
                     if(bname.length>=64)
                         return "Beat Name must be less than 64 characters";
@@ -447,54 +447,6 @@ server.route(
                     return "Can't add to the database";
                 }
                 })
-        // server.route(
-        //     {
-        //     method:'POST',
-        //     path:'/api/beats',
-        //     handler:(request,h)=>{
-                
-        //         var bname=request.payload.beat_name;
-        //         var burl=request.payload.beat_url;
-        //         var p_id=request.payload.producer_id;
-        //         var approved=request.payload.approved;
-        //         var sdate=request.payload.submit_date;
-        //         var adate=request.payload.approval_date;
-        //         var post_date_time=request.payload.post_date_time;
-            
-        //             if(bname.length>=64)
-        //                 return "Beat Name must be less than 64 characters";
-        //             else if((bname.includes('[')==true) || (bname.includes(']')==true))
-        //                 return "Name can't contain Tags";
-        //             else if((email.includes('@gmail.com')==false) && (email.includes('@yahoo.com')==false))
-        //                 return "The E-mail provided is not proper";
-        //             else if(email.length>=256)
-        //                 return "E-mail Length must be less than 256 characters";
-        //             else if(tname.length>=16)
-        //                 return "Twitter Name must be less than 16 characters"; 
-        //             else if(sname.length>=32)
-        //                 return "Soundcloud Name must be less than 32 characters";
-        //             else{    
-        //             return new Promise((resolve,reject)=>{
-        //                 const sqlconnection = mysql.createConnection({
-        //                     host:'localhost',
-        //                     user:'root',
-        //                     database:'slapchart'
-            
-        //                 })
-        //                 sqlconnection.connect();
-            
-        //                 sqlconnection.query(`INSERT INTO beats(id,beat_name,beat_url,approved,producer_id,submit_date,approval_date,post_date_time)
-        //                 VALUES(${request.payload.id},'${bname}','${burl}',${approved},'${p_id}','${sdate}','${adate}','${post_date_time}')`,(error,results,fields)=>{
-        //                     if(error) reject(error);
-            
-        //                     resolve(results);
-        //                 })
-        //                 sqlconnection.end();
-        //         })
-        //         }
-        //         }
-        //         })
-
 
 
                 //Question 13 from beats using id
@@ -569,14 +521,6 @@ server.route(
                                 return "Beat Name must be less than 64 characters";
                             else if((bname.includes('[')==true) || (bname.includes(']')==true))
                                 return "Name can't contain Tags";
-                            /*else if((email.includes('@gmail.com')==false) && (email.includes('@yahoo.com')==false))
-                                return "The E-mail provided is not proper";
-                            else if(email.length>=256)
-                                return "E-mail Length must be less than 256 characters";
-                            else if(tname.length>=16)
-                                return "Twitter Name must be less than 16 characters"; 
-                            else if(sname.length>=32)
-                                return "Soundcloud Name must be less than 32 characters";*/ 
                             else{    
                             return new Promise((resolve,reject)=>{
                                 const sqlconnection = mysql.createConnection({
@@ -637,8 +581,6 @@ server.route(
                                     handler:(request,h)=>{
                                         
                                         var id=request.params.id;
-                                        /*var adate=request.payload.approval_date;
-                                        var post_date_time=request.payload.post_date_time;*/
                                      
                                             return new Promise((resolve,reject)=>{
                                                 const sqlconnection = mysql.createConnection({
