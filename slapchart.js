@@ -370,33 +370,61 @@ server.route(
         })
 
         //Question 12 Post in beats with validations
+
+        var  p = async (producerId)=>{
+            var n = new Promise((resolve,reject)=>{
+                const sqlconnection = mysql.createConnection({
+                    host:'localhost',
+                    user:'root',
+                    database:'slapchart'
+            
+                })
+                sqlconnection.connect();
+            
+                sqlconnection.query(`select count(*) AS count from beats where submit_date=CURRENT_DATE && producer_id=${producerId}`,(error,results,fields)=>{
+                    if(error) reject(error);
+                    
+                    
+                    resolve(results);
+                })
+        
+                sqlconnection.end();
+            })
+            
+             return n;
+        }  
+        
+        
+        
         server.route(
             {
             method:'POST',
             path:'/api/beats',
-            handler:(request,h)=>{
+            handler:async (request,h)=>{
                 
-                var bname=request.payload.beat_name;
+                 var bname=request.payload.beat_name;
                 var burl=request.payload.beat_url;
                 var p_id=request.payload.producer_id;
                 var approved=request.payload.approved;
                 var sdate=request.payload.submit_date;
                 var adate=request.payload.approval_date;
                 var post_date_time=request.payload.post_date_time;
-            
+        
+                //let {beat_name: bname} = request.payload
+        
+                var countArr= await p(p_id).then((results)=>{
+                    var res = results[0].count;
+                    //console.log(res);
+                    return Number(results[0].count);
+                });
+                // console.log(countArr);
+                // console.log(countArr);
                     if(bname.length>=64)
                         return "Beat Name must be less than 64 characters";
                     else if((bname.includes('[')==true) || (bname.includes(']')==true))
                         return "Name can't contain Tags";
-                    /*else if((email.includes('@gmail.com')==false) && (email.includes('@yahoo.com')==false))
-                        return "The E-mail provided is not proper";
-                    else if(email.length>=256)
-                        return "E-mail Length must be less than 256 characters";
-                    else if(tname.length>=16)
-                        return "Twitter Name must be less than 16 characters"; 
-                    else if(sname.length>=32)
-                        return "Soundcloud Name must be less than 32 characters";*/ 
-                    else{    
+                       
+                    else if(countArr==0){    
                     return new Promise((resolve,reject)=>{
                         const sqlconnection = mysql.createConnection({
                             host:'localhost',
@@ -415,8 +443,59 @@ server.route(
                         sqlconnection.end();
                 })
                 }
+                else
+                    return "Can't add to the database";
                 }
                 })
+        // server.route(
+        //     {
+        //     method:'POST',
+        //     path:'/api/beats',
+        //     handler:(request,h)=>{
+                
+        //         var bname=request.payload.beat_name;
+        //         var burl=request.payload.beat_url;
+        //         var p_id=request.payload.producer_id;
+        //         var approved=request.payload.approved;
+        //         var sdate=request.payload.submit_date;
+        //         var adate=request.payload.approval_date;
+        //         var post_date_time=request.payload.post_date_time;
+            
+        //             if(bname.length>=64)
+        //                 return "Beat Name must be less than 64 characters";
+        //             else if((bname.includes('[')==true) || (bname.includes(']')==true))
+        //                 return "Name can't contain Tags";
+        //             else if((email.includes('@gmail.com')==false) && (email.includes('@yahoo.com')==false))
+        //                 return "The E-mail provided is not proper";
+        //             else if(email.length>=256)
+        //                 return "E-mail Length must be less than 256 characters";
+        //             else if(tname.length>=16)
+        //                 return "Twitter Name must be less than 16 characters"; 
+        //             else if(sname.length>=32)
+        //                 return "Soundcloud Name must be less than 32 characters";
+        //             else{    
+        //             return new Promise((resolve,reject)=>{
+        //                 const sqlconnection = mysql.createConnection({
+        //                     host:'localhost',
+        //                     user:'root',
+        //                     database:'slapchart'
+            
+        //                 })
+        //                 sqlconnection.connect();
+            
+        //                 sqlconnection.query(`INSERT INTO beats(id,beat_name,beat_url,approved,producer_id,submit_date,approval_date,post_date_time)
+        //                 VALUES(${request.payload.id},'${bname}','${burl}',${approved},'${p_id}','${sdate}','${adate}','${post_date_time}')`,(error,results,fields)=>{
+        //                     if(error) reject(error);
+            
+        //                     resolve(results);
+        //                 })
+        //                 sqlconnection.end();
+        //         })
+        //         }
+        //         }
+        //         })
+
+
 
                 //Question 13 from beats using id
                 server.route({
