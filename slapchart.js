@@ -3,6 +3,8 @@
 const Hapi = require('@hapi/hapi');
 const mysql=require('mysql');
 
+console.log("Hello There!");
+
 const server = Hapi.server({
     host:'localhost',
     port:8000
